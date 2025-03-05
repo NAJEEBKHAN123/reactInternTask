@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 
@@ -32,16 +33,15 @@ function ItemList({ items, fetchItemData }) {
   const deleteItem = async (id) => {
     try {
       setIsDeleting(id); // Set deleting state for specific item
-      await fetch(`http://localhost:3000/api/items/${id}`, {
-        method: "DELETE",
-      });
+
+      await axios.delete(`http://localhost:3000/api/items/${id}`, {
+        headers: {'Content-Type' : 'application/json'}
+      })
       alert("Item Deleted Successfully 🚀");
       await fetchItemData();
     } catch (error) {
       console.error("Error deleting item:", error);
-    } finally {
-      setIsDeleting(null); // Reset deleting state
-    }
+    } 
   };
 
   return (

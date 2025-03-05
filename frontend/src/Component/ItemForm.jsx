@@ -1,31 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
 
 function ItemForm({ fetchItemData }) {
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState('');
-  const [price, setPrice] = useState('');
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const itemData = { name, category, price };
 
     try {
-      const response = await fetch('http://localhost:3000/api/items', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(itemData),
-      });
+      const response = await axios.post(
+        "http://localhost:3000/api/items",
+        itemData,
+        {
+          Headers: { "Content-Type": "application/json" },
+        }
+      );
 
-      const jsonData = await response.json();
-      if (jsonData.success) {
-        alert('Item Created Successfully ✅');
-        fetchItemData(); // Ye wala magic call 😎
-        setName('');
-        setCategory('');
-        setPrice('');
+      if (response.data.success) {
+        alert("Item Created Successfully ✅");
+        fetchItemData(); // Fetch updated list
+        setName("");
+        setCategory("");
+        setPrice("");
       }
     } catch (error) {
-      console.log('Error in creating item:', error);
+      console.log(
+        "Error in creating item:",
+        error.response?.data?.message || error.message
+      );
     }
   };
 
@@ -52,7 +57,9 @@ function ItemForm({ fetchItemData }) {
         onChange={(e) => setPrice(e.target.value)}
         className="border p-2"
       />
-      <button type="submit" className="bg-blue-500 text-white p-2">Create Item</button>
+      <button type="submit" className="bg-blue-500 text-white p-2">
+        Create Item
+      </button>
     </form>
   );
 }
